@@ -1,14 +1,7 @@
-:root {
-  --primary-color: #605DC8;
-  --secondary-color: #8B89E6;
-  --accent-color: #e8e7fa;
-  --shadow-color: #E8E8E8;
-}
-
 .listing {
-  background: #333;
+  background: var(--colore-cartelle);
   border-radius: 30px;
-  padding-bottom: 30px;
+  padding-bottom: var(--content-padding);
   box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
   position: relative;
@@ -20,7 +13,7 @@
 }
 
 .listing-heading {
-  color: #fff;
+  color: var(--accent-color);
   padding: 10px 20px 0 20px;
 }
 
@@ -40,7 +33,7 @@
 }
 
 .listing a {
-  padding-left: 20px;
+  padding-left: var(--content-padding);
   text-decoration: none;
   color: var(--primary-color);
   font-weight: bolder;

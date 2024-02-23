@@ -18,6 +18,10 @@ body {
   --secondary-color: #8B89E6;
   --accent-color: #e8e7fa;
   --shadow-color: #E8E8E8;
+  --colore-body: #1e1e1e;
+  --colore-componenti: #242424;
+  --colore-cartelle: #333;
+  --content-padding: 30px;
 }
 
 button.primary {
