@@ -1,0 +1,33 @@
+html,
+body {
+  background-color: #1e1e1e;
+  color: #fff; /* Colore del testo */
+  height: 100vh;
+}
+
+/* Stile del header */
+header {
+  background-color: #242424; /* Colore di sfondo del header */
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.5); /* Ombra */
+  margin:30px 70px;
+  padding:30px;
+}
+
+/* Logo */
+.brand-logo {
+  height: 40px; /* Altezza del logo */
+  width: auto; /* Larghezza del logo */
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Stile del contenuto */
+.content {
+  background-color: #1e1e1e; /* Colore di sfondo del contenuto */
+}
+
+/* Spaziatura del contenuto */
+:host {
+  --content-padding: 20px; /* Spaziatura interna */
+}

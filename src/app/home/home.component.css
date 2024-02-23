@@ -1,0 +1,77 @@
+:root {
+  --primary-color: #3e3e3e; /* Colore principale - grigio scuro */
+  --secondary-color: #ffffff; /* Colore secondario - bianco */
+}
+
+.test{
+  margin:30px;
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.5);
+  padding:30px;
+  background-color: #242424;
+  margin:30px 70px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.test form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 30%; /* Larghezza minima del form */
+}
+
+.test form input[type="text"]{
+  width:100%;
+  background-color: #333;
+}
+
+
+
+.results {
+  display: grid;
+  column-gap: 14px;
+  row-gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 400px));
+  margin: 50px;
+  justify-content: space-around;
+  background-color: #242424;
+  padding:50px;
+  margin:30px 70px;
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.5);
+}
+
+input[type="text"] {
+  border: solid 1px var(--primary-color);
+  padding: 10px;
+  border-radius: 8px;
+  margin-right: 4px;
+  display: inline-block;
+  width: 30%;
+  background-color: #2c2c2c; /* Colore di sfondo per il campo di input */
+  color: var(--secondary-color);
+}
+
+button {
+  padding: 10px;
+  border: solid 1px var(--primary-color);
+  background: var(--primary-color);
+  color: var(--secondary-color);
+  border-radius: 8px;
+}
+
+@media (min-width: 500px) and (max-width: 768px) {
+  .results {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  input[type="text"] {
+    width: 70%;
+  }
+}
+
+@media (max-width: 499px) {
+  .results {
+    grid-template-columns: 1fr;
+  }
+}
