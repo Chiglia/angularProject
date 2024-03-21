@@ -1,15 +1,15 @@
 version: "3.8"
 
 services: 
-  app:
+  social-network:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: SocialNetworkBE/Dockerfile
     ports: 
       - ${ENV_PORT}:${ENV_PORT}
     volumes: 
-      - .:/fantaf1-16
-      - '/fantaf1-16/node_modules'  
+      - ./SocialNetworkBE:/app
+      - ./SocialNetworkFE/dist/social-network:/app/public
     depends_on: 
       - mysql_server  
 

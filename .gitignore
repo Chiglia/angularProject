@@ -1,8 +1,10 @@
 .env
 /.env
-node_modules/
-fantaf1/dist/
-fantaf1/node_modules/
-fantaf1/.angular/
-certificato.pem
-key.pem
+SocialNetworkBE/.env
+/SocialNetworkBE/.env
+SocialNetworkBE/node_modules/
+SocialNetworkFE/dist/
+SocialNetworkFE/node_modules/
+SocialNetworkFE/.angular/
+SocialNetworkFE/.vscode/
+SocialNetworkFE/.editorconfig/
