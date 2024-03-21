@@ -25,13 +25,13 @@ db.connect((error) => {
   }
   console.log("Connected to the database...");
 });
-
 app.use(express.json());
 
-app.use(express.static(path.resolve(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../frontend/dist/social-network')));
 
+// Servire la pagina index.html
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+  res.sendFile(path.resolve(__dirname, '../frontend/dist/social-network', 'index.html'));
 });
 
 
