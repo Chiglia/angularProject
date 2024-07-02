@@ -19,13 +19,8 @@ db.connect((err) => {
   }
   console.log("Connected as id " + db.threadId);
 
-  // Crea il database se non esiste
-  db.query("CREATE DATABASE IF NOT EXISTS mydatabase", (err, result) => {
-    if (err) throw err;
-    console.log("Database created or already exists");
-
-    // Crea una tabella di esempio se non esiste
-    const createTableQuery = `
+  // Crea una tabella di esempio se non esiste
+  const createTableQuery = `
                 CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT,
                     email VARCHAR(255) NOT NULL,
@@ -34,32 +29,31 @@ db.connect((err) => {
                     PRIMARY KEY (id)
                 )
             `;
-    db.query(createTableQuery, (err, result) => {
-      if (err) throw err;
-      console.log("Table created or already exists");
+  db.query(createTableQuery, (err, result) => {
+    if (err) throw err;
+    console.log("Table created or already exists");
 
-      // Controlla se l'utente con nome 'Davide Chigliaro' esiste
-      const checkUserQuery = `
+    // Controlla se l'utente con nome 'Davide Chigliaro' esiste
+    const checkUserQuery = `
                     SELECT * FROM users WHERE username = 'Davide Chigliaro'
                 `;
-      db.query(checkUserQuery, async (err, results) => {
-        if (err) throw err;
+    db.query(checkUserQuery, async (err, results) => {
+      if (err) throw err;
 
-        if (results.length === 0) {
-          // Se l'utente non esiste, lo inserisce
-          const hashedPassword = await bcrypt.hash("test", 10);
+      if (results.length === 0) {
+        // Se l'utente non esiste, lo inserisce
+        const hashedPassword = await bcrypt.hash("test", 10);
 
-          const insertUserQuery = `
+        const insertUserQuery = `
                             INSERT INTO users (username, email, password) VALUES ('Davide Chigliaro', 'd@d', ?)
                         `;
-          db.query(insertUserQuery, [hashedPassword], (err, result) => {
-            if (err) throw err;
-            console.log("User Davide Chigliaro inserted");
-          });
-        } else {
-          console.log("User Davide Chigliaro already exists");
-        }
-      });
+        db.query(insertUserQuery, [hashedPassword], (err, result) => {
+          if (err) throw err;
+          console.log("User Davide Chigliaro inserted");
+        });
+      } else {
+        console.log("User Davide Chigliaro already exists");
+      }
     });
   });
 });
