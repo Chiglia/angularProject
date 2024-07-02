@@ -1,14 +1,16 @@
 const mysql = require("mysql2");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
 
 const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "W3_vernice", // Assicurati di usare la password corretta
-  database: "mydatabase",
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
 };
 
 const db = mysql.createConnection(dbConfig);
+console.log(dbConfig);
 // db.query("drop database mydatabase");
 db.connect((err) => {
   if (err) {
@@ -29,7 +31,6 @@ db.connect((err) => {
                     email VARCHAR(255) NOT NULL,
                     username VARCHAR(255) NOT NULL,
                     password VARCHAR(255) NOT NULL,
-                    token VARCHAR(255),
                     PRIMARY KEY (id)
                 )
             `;
@@ -49,7 +50,7 @@ db.connect((err) => {
           const hashedPassword = await bcrypt.hash("test", 10);
 
           const insertUserQuery = `
-                            INSERT INTO users (username, email, password, token) VALUES ('Davide Chigliaro', 'd@d', ?, '')
+                            INSERT INTO users (username, email, password) VALUES ('Davide Chigliaro', 'd@d', ?)
                         `;
           db.query(insertUserQuery, [hashedPassword], (err, result) => {
             if (err) throw err;

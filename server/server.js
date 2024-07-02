@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const db = require("./database");
 
 const app = express();
@@ -16,7 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 // Endpoint per il login
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body.user;
-  // Verifica delle credenziali nel database
   db.query(
     "SELECT * FROM users WHERE email = ?",
     [email],
@@ -30,43 +29,27 @@ app.post("/api/login", async (req, res) => {
         res.status(401).json({ error: "Username o password non validi" });
         return;
       }
-
-      const user = results[0];
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = await bcrypt.compare(password, results[0].password);
 
       if (!passwordMatch) {
         res.status(401).json({ error: "Username o password non validi" });
         return;
       }
-
-      // Generazione del token JWT
-      const token = jwt.sign({ username: user.username }, "your_secret_key", {
-        expiresIn: "1h",
-      });
-
-      db.query(
-        "UPDATE users SET token = ? WHERE email = ?",
-        [token, email],
-        async (err, results) => {
-          if (err) {
-            res.status(500).json({ error: "Errore nel server" });
-            return;
-          }
-          console.log("inserito token");
-          db.query(
-            "SELECT email,token,username FROM users WHERE email = ?",
-            [email],
-            async (err, results) => {
-              if (err) {
-                res.status(500).json({ error: "Errore nel server" });
-                return;
-              }
-              res.json({ user: results[0] });
-              console.log({ user: results[0] });
-            }
-          );
+      const token = jwt.sign(
+        { username: results[0].username },
+        "your_secret_key",
+        {
+          expiresIn: "1h",
         }
       );
+
+      res.json({
+        user: {
+          email: results[0].email,
+          username: results[0].username,
+          token: token,
+        },
+      });
     }
   );
 });
@@ -92,7 +75,7 @@ function authenticateToken(req, res, next) {
 
 // Definisci una route di esempio
 app.get("/api/users", (req, res) => {
-  db.query("SELECT * FROM users", (err, results) => {
+  db.query("SELECT email,username FROM users", (err, results) => {
     if (err) throw err;
     res.json(results);
   });
