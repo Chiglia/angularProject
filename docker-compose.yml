@@ -1,20 +1,6 @@
 version: "3.8"
 
 services:
-  mysql_server:
-    image: mysql:8.0
-    ports:
-      - "${MYSQL_TCP_PORT}:${MYSQL_TCP_PORT}"
-    environment:
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-      - MYSQL_ROOT_PASSWORD
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-
   backend:
     build:
       context: ./server
@@ -29,9 +15,6 @@ services:
     volumes:
       - ./server:/app
       - /app/node_modules
-    depends_on:
-      mysql_server:
-        condition: service_healthy
 
   frontend:
     build:
@@ -43,6 +26,3 @@ services:
       - ./client:/app
     depends_on:
       - backend
-
-volumes:
-  mysql_data:
