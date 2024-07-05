@@ -11,8 +11,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes
-const apiRoutes = require("./routes/apiRoutes");
-app.use("/api", apiRoutes);
+app.use("/api/users", require("./router/user/user.controller"));
 
 // Database connection
 mongoose

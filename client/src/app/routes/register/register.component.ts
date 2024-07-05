@@ -1,9 +1,6 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserInterface } from 'src/app/api/models/user.interface';
 import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
@@ -12,27 +9,26 @@ import { AuthService } from 'src/app/auth/auth.service';
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  fb = inject(FormBuilder);
-  http = inject(HttpClient);
-  authService = inject(AuthService);
-  router = inject(Router);
+  registerForm: FormGroup;
 
-  form = this.fb.nonNullable.group({
-    username: ['', Validators.required],
-    email: ['', Validators.required],
-    password: ['', Validators.required],
-  });
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.registerForm = this.fb.group({
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
 
-  onSubmit(): void {
-    this.http
-      .post<{ user: UserInterface }>('/api/users', {
-        user: this.form.getRawValue(),
-      })
-      .subscribe((response) => {
-        console.log('response', response);
-        localStorage.setItem('token', response.user.token);
-        this.authService.currentUserSig.set(response.user);
-        this.router.navigateByUrl('/');
+  onSubmit() {
+    if (this.registerForm.valid) {
+      this.authService.register(this.registerForm.value).subscribe({
+        next: () => this.router.navigate(['/user']),
+        error: (err) => console.error(err),
       });
+    }
   }
 }

@@ -1,7 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
-import { UserInterface } from './api/models/user.interface';
-import { UserService } from './api/services/user.service';
+import { Component } from '@angular/core';
 import { AuthService } from './auth/auth.service';
 
 @Component({
@@ -10,25 +7,9 @@ import { AuthService } from './auth/auth.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  authService = inject(AuthService);
-  http = inject(HttpClient);
-  private apiUrl = '/api/users';
+  constructor(public authService: AuthService) {}
 
-  ngOnInit(): void {
-    this.http.get<{ user: UserInterface }>(this.apiUrl).subscribe({
-      next: (response) => {
-        console.log('response', response);
-        this.authService.currentUserSig.set(response.user);
-      },
-      error: () => {
-        this.authService.currentUserSig.set(null);
-      },
-    });
-  }
-
-  logout(): void {
-    console.log('logout');
-    localStorage.setItem('token', '');
-    this.authService.currentUserSig.set(null);
+  logout() {
+    this.authService.logout();
   }
 }

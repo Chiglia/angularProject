@@ -1,0 +1,4 @@
+<div *ngIf="currentUser">
+  Welcome, {{ currentUser.username }}!
+  <span (click)="logout()">Logout</span>
+</div>

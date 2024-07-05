@@ -1,22 +1,26 @@
-const User = require("../models/User");
+const User = require("./user.model");
+const auth = require("../../middleware/auth");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { Router } = require("express");
 
 // Secret key for JWT
 const jwtSecret = process.env.JWT_SECRET || "your_jwt_secret";
 
+const router = Router();
+
 // Get all users
-exports.getAllUsers = async (req, res) => {
+router.get("/", [auth], async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+});
 
 // Get a single user by ID
-exports.getUserById = async (req, res) => {
+router.get("/:id", [auth], async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user == null) {
@@ -26,10 +30,10 @@ exports.getUserById = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+});
 
 // Create a new user
-exports.createUser = async (req, res) => {
+router.post("/", [], async (req, res) => {
   const user = new User({
     name: req.body.name,
     email: req.body.email,
@@ -41,10 +45,10 @@ exports.createUser = async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-};
+});
 
 // Update a user
-exports.updateUser = async (req, res) => {
+router.put("/:id", [auth], async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user == null) {
@@ -64,10 +68,10 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-};
+});
 
 // Delete a user
-exports.deleteUser = async (req, res) => {
+router.delete("/:id", [auth], async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user == null) {
@@ -78,21 +82,21 @@ exports.deleteUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+});
 
 // Login endpoint
-exports.loginUser = async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid password" });
     }
 
     const token = jwt.sign({ userId: user._id }, jwtSecret, {
@@ -102,11 +106,12 @@ exports.loginUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+});
 
 // Register endpoint
-exports.registerUser = async (req, res) => {
+router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(req.body);
 
   try {
     const existingUser = await User.findOne({ email });
@@ -114,12 +119,13 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(password, salt);
 
     const user = new User({
       name,
       email,
-      password: hashedPassword,
+      password: hash,
     });
 
     const newUser = await user.save();
@@ -131,4 +137,6 @@ exports.registerUser = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-};
+});
+
+module.exports = router;
