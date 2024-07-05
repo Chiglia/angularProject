@@ -1,5 +1,9 @@
-// src/controllers/api.js
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+// Secret key for JWT
+const jwtSecret = process.env.JWT_SECRET || "your_jwt_secret";
 
 // Get all users
 exports.getAllUsers = async (req, res) => {
@@ -69,8 +73,61 @@ exports.deleteUser = async (req, res) => {
     if (user == null) {
       return res.status(404).json({ message: "User not found" });
     }
-    await user.remove();
+    await user.deleteOne();
     res.json({ message: "User deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Login endpoint
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, jwtSecret, {
+      expiresIn: "1h",
+    });
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Register endpoint
+exports.registerUser = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    const newUser = await user.save();
+
+    const token = jwt.sign({ userId: newUser._id }, jwtSecret, {
+      expiresIn: "1h",
+    });
+    res.status(201).json({ token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

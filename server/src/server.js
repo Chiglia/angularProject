@@ -1,6 +1,7 @@
 // src/app.js
 const express = require("express");
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 const app = express();
