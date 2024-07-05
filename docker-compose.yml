@@ -6,7 +6,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     ports:
-      - "${ENV_PORT}:${ENV_PORT}"
+      - "3000:3000"
     environment:
       - MYSQL_HOST
       - MYSQL_DATABASE

@@ -10,7 +10,7 @@ import { UserInterface } from '../api/models/user.interface';
 })
 export class AuthService {
   currentUser: UserInterface | null = null;
-  private apiUrl = '/api'; // Usa il percorso relativo definito nel proxy.conf.json
+  private apiUrl = '/api/users';
 
   constructor(private http: HttpClient, private router: Router) {}
 
