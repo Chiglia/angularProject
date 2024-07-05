@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">MyApp</a>
+    <button class="navbar-toggler" type="button" (click)="toggleNavbar()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" [ngClass]="{ show: navbarOpen }">
+      <ul class="navbar-nav ml-auto">
+        <!-- Mostra solo se l'utente non è autenticato e non è nelle pagine di login o register -->
+        <li
+          class="nav-item"
+          *ngIf="
+            !authService.isAuthenticated() &&
+            actualLink !== '/login' &&
+            actualLink !== '/register'
+          "
+        >
+          <a class="nav-link" routerLink="/login">Login</a>
+        </li>
+
+        <!-- Mostra solo se l'utente è autenticato -->
+        <li class="nav-item" *ngIf="authService.isAuthenticated()">
+          <a class="nav-link" routerLink="/user" style="cursor: pointer"
+            >Profile</a
+          >
+        </li>
+
+        <li class="nav-item" *ngIf="authService.isAuthenticated()">
+          <a class="nav-link" (click)="logout()" style="cursor: pointer"
+            >Logout</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
