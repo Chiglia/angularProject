@@ -12,6 +12,8 @@ import { RegisterComponent } from './routes/register/register.component';
 import { UserComponent } from './routes/user/user.component';
 import { NavComponent } from './routes/nav/nav.component';
 import { FooterComponent } from './routes/footer/footer.component';
+import { AdminComponent } from './routes/admin/admin.component';
+import { ErrorComponent } from './routes/error/error.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +24,8 @@ import { FooterComponent } from './routes/footer/footer.component';
     UserComponent,
     NavComponent,
     FooterComponent,
+    AdminComponent,
+    ErrorComponent,
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,8 @@ import { LoginComponent } from '../app/routes/login/login.component';
 import { RegisterComponent } from './routes/register/register.component';
 import { UserComponent } from './routes/user/user.component';
 import { AuthGuard } from './auth/auth.guard';
+import { AdminComponent } from './routes/admin/admin.component';
+import { ErrorComponent } from './routes/error/error.component';
 
 const routes: Routes = [
   {
@@ -24,6 +26,16 @@ const routes: Routes = [
     component: UserComponent,
     canActivate: [AuthGuard],
     data: { allowedRoles: ['user', 'admin'] },
+  },
+  {
+    path: 'admin',
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    data: { allowedRoles: ['admin'] },
+  },
+  {
+    path: 'error',
+    component: ErrorComponent,
   },
   {
     path: '**',

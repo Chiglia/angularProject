@@ -19,13 +19,11 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> {
-    const allowedRoles = route.data['allowedRoles'] as string[]; // Ottieni i ruoli consentiti dai data della rotta
-    console.log(allowedRoles);
+    const allowedRoles = route.data['allowedRoles'] as string[];
 
     return this.authService.currentUser$.pipe(
       map((user) => this.checkRoles(user?.roles || [], allowedRoles)),
       tap((allowed) => {
-        console.log(allowed);
         if (!allowed) {
           this.router.navigate(['/error'], {
             queryParams: {
@@ -39,7 +37,6 @@ export class AuthGuard implements CanActivate {
   }
 
   private checkRoles(userRoles: string[], allowedRoles: string[]): boolean {
-    console.log(userRoles);
     return allowedRoles.some((role) => userRoles.includes(role));
   }
 }

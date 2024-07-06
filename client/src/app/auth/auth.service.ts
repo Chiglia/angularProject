@@ -23,7 +23,6 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
-        console.log('Registered user:', response.user); // Verifica che i ruoli siano presenti
         this.currentUserSubject.next(response.user);
         this.router.navigate(['/user']);
       })
@@ -34,7 +33,6 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
-        console.log('Logged:', response.user); // Verifica che i ruoli siano presenti
         this.currentUserSubject.next(response.user);
         this.router.navigate(['/user']);
       })
