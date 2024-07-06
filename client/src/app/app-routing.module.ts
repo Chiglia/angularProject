@@ -23,6 +23,7 @@ const routes: Routes = [
     path: 'user',
     component: UserComponent,
     canActivate: [AuthGuard],
+    data: { allowedRoles: ['user', 'admin'] },
   },
   {
     path: '**',

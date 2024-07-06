@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserInterface } from '../api/models/user.interface';
 
@@ -9,20 +9,23 @@ import { UserInterface } from '../api/models/user.interface';
   providedIn: 'root',
 })
 export class AuthService {
-  currentUser: UserInterface | null = null;
+  private currentUserSubject = new BehaviorSubject<UserInterface | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
   private apiUrl = '/api/users';
 
   constructor(private http: HttpClient, private router: Router) {}
 
   getCurrentUser(): UserInterface | null {
-    return this.currentUser;
+    return this.currentUserSubject.value;
   }
 
   register(user: UserInterface): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, user).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
-        this.currentUser = response.user;
+        console.log('Registered user:', response.user); // Verifica che i ruoli siano presenti
+        this.currentUserSubject.next(response.user);
+        this.router.navigate(['/user']);
       })
     );
   }
@@ -31,14 +34,16 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, { email, password }).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
-        this.currentUser = response.user;
+        console.log('Logged:', response.user); // Verifica che i ruoli siano presenti
+        this.currentUserSubject.next(response.user);
+        this.router.navigate(['/user']);
       })
     );
   }
 
   logout() {
     localStorage.removeItem('token');
-    this.currentUser = null;
+    this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
 

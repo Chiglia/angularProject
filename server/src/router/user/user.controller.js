@@ -102,7 +102,14 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: user._id }, jwtSecret, {
       expiresIn: "1h",
     });
-    res.json({ token });
+    res.json({
+      user: {
+        email: user.email,
+        username: user.username,
+        roles: user.roles,
+      },
+      token: token,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -111,7 +118,6 @@ router.post("/login", async (req, res) => {
 // Register endpoint
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(req.body);
 
   try {
     const existingUser = await User.findOne({ email });
@@ -133,7 +139,14 @@ router.post("/register", async (req, res) => {
     const token = jwt.sign({ userId: newUser._id }, jwtSecret, {
       expiresIn: "1h",
     });
-    res.status(201).json({ token });
+    res.status(201).json({
+      user: {
+        email: user.email,
+        username: user.username,
+        roles: user.roles,
+      },
+      token: token,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
