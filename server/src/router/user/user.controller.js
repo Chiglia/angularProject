@@ -99,17 +99,14 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign({ userId: user._id }, jwtSecret, {
-      expiresIn: "1h",
-    });
-    res.json({
-      user: {
-        email: user.email,
-        username: user.username,
-        roles: user.roles,
-      },
-      token: token,
-    });
+    const token = jwt.sign(
+      { email: user.email, name: user.name, roles: user.roles },
+      jwtSecret,
+      {
+        expiresIn: "1h",
+      }
+    );
+    res.json({ token: token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -136,17 +133,14 @@ router.post("/register", async (req, res) => {
 
     const newUser = await user.save();
 
-    const token = jwt.sign({ userId: newUser._id }, jwtSecret, {
-      expiresIn: "1h",
-    });
-    res.status(201).json({
-      user: {
-        email: user.email,
-        username: user.username,
-        roles: user.roles,
-      },
-      token: token,
-    });
+    const token = jwt.sign(
+      { email: user.email, name: user.name, roles: user.roles },
+      jwtSecret,
+      {
+        expiresIn: "1h",
+      }
+    );
+    res.status(201).json({ token: token });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
